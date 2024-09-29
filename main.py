@@ -1,20 +1,39 @@
 from forexgym import CurrencyPair, Query
+import pandas as pd
+
+def select_close(df: pd.DataFrame, *args, **kwargs) -> pd.DataFrame:
+    
+    return pd.DataFrame(df["Close"])
+
+def article_processor(df: pd.DataFrame, *args, **kwargs) -> pd.DataFrame:
+    df["x1"] = ((df["Close"].shift(-1) - df["Close"]) / df["Close"]).shift(1) 
+    df["x2"] = ((df["High"].shift(-1) - df["High"]) / df["High"]).shift(1) 
+    df["x3"] = ((df["Low"].shift(-1) - df["Low"]) / df["Low"]).shift(1) 
+    df["x4"] = (df["High"] - df["Close"]) / df["Close"] 
+    df["x5"] = (df["Close"] - df["Low"]) / df["Close"] 
+    
+    return df.drop(["Date", "Open", "High", "Low", "Close"], axis=1)
 
 if __name__ == "__main__":
     ticker = "EURUSD"
     #timeframes = ["1m", "5m", "15m", "30m", "1H", "4H", "1D"]
-    timeframes = ["1H", "15m"]
+    timeframes = ["4H", "1H", "15m"]
     pair = CurrencyPair(ticker, timeframes)
     
-    query = Query(episode_length=256, trading_timeframe="1H", trading_column="Open")
+    query = Query(episode_length=256, trading_timeframe="1H", trading_column="Low")
+    # query.add_query(
+    #      timeframe="1H",
+    #      window_size=3
+    # )
+    # query.add_query(
+    #     timeframe="15m",
+    #     window_size=2
+    # )
+    
     query.add_query(
-         timeframe="1H",
-         window_size=3
+        timeframe="1H",
+        window_size=16,
+        data_processor=article_processor
     )
-    query.add_query(
-        timeframe="15m",
-        window_size=2
-    )
-    episode = pair.generate_dataset(query)
-    print(episode.head())
+    dataset = pair.generate_dataset(query)
     

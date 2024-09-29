@@ -7,6 +7,24 @@ class Timeframe:
     lable: str
     value: timedelta = field(default_factory=timedelta)
     
+    
+    def __eq__(self, other) -> bool:
+        return self.value == other.value
+    
+    def __gt__(self, other) -> bool:
+        return self.value > other.value
+    
+    def __ge__(self, other) -> bool:
+        return self.value >= other.value
+    
+    def __lt__(self, other) -> bool:
+        return self.value < other.value
+    
+    def __le__(self, other) -> bool:
+        return self.value <= other.value
+    
+    
+    
 available_timeframes = OrderedDict([
     ("1m", Timeframe("1m", timedelta(minutes=1))),
     ("5m", Timeframe("5m", timedelta(minutes=5))),
