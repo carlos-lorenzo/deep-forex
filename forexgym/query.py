@@ -10,13 +10,16 @@ from .timeframe import Timeframe, available_timeframes
 class Query:
     episode_length: int
     trading_timeframe: str
+    trading_column: str
     queries: List[Dict[str, Timeframe | int | Callable ]] = field(init=False, default_factory=list)
     
     def add_query(self, timeframe: Timeframe, window_size: int, data_processor: Callable = None) -> None:
         if timeframe not in available_timeframes:
             raise ValueError(f"Invalid timeframe: {timeframe} - Available timeframes: {list(available_timeframes.keys())}")
-        
-        self.queries.append({"timeframe": available_timeframes[timeframe], "window_size": window_size, "data_processor": data_processor})
+        query = {"timeframe": available_timeframes[timeframe], "window_size": window_size}
+        if data_processor:
+            query["data_processor"] = data_processor
+        self.queries.append(query)
         
     
     @property
