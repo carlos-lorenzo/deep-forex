@@ -34,7 +34,7 @@ class BaseEnvironment(gym.Env):
         self.observation_space = gym.spaces.Box(
             low=-1e10, high=1e10, shape=(query.observation_size,), dtype=np.float32 
         )
-        
+        self.action_class = None
         self.action_space = None # Defined by child class
         self.episode_length = episode_length
         
@@ -60,9 +60,8 @@ class BaseEnvironment(gym.Env):
         return observation, info
     
     def step(self, action) -> Tuple[np.ndarray, float, bool, dict]:
-        observation, reward, done, info = self.active_episode.step(action)
-        
-        return observation, reward, done, info
+          
+        return self.active_episode.step(action)
     
     def render(self) -> None:
         return self.active_episode.render()

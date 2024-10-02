@@ -29,4 +29,4 @@ class Reward:
         if self.reward_type == "categorical":
             return (-1, 1)
         elif self.reward_type == "continuous":
-            return (0, 1)
+            return (-1e10, 1e10)

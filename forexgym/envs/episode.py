@@ -3,7 +3,7 @@ import random
 
 import pandas as pd
 
-from .actions import Action, DiscreteAction
+from .actions import DiscreteAction
 from .rewards import Reward
 
 class BaseEpisode:
@@ -17,13 +17,14 @@ class BaseEpisode:
         self.active_ticker: str = None
         
         self.reward_type = reward_type
+        self.time_column = time_column
         
         self._generate_episode_dataframe(episode_length, time_column)
         
     def _generate_episode_dataframe(self, episode_length: int, time_column: str = "Date") -> None:
         ticker, dataset = random.choice(list(self.datasets.items()))
         
-        dataset = dataset.drop(["Trading_Price"], axis=1)
+        # dataset = dataset.drop(["Trading_Price"], axis=1)
         start_index = dataset[:-episode_length].sample(n=1).index[0]
         
         self.dataset = dataset[start_index:start_index+episode_length]
@@ -44,7 +45,7 @@ class BaseEpisode:
     
     @property
     def observation(self):
-        return self.dataset.iloc[self.time_step].to_numpy()
+        return self.dataset.drop(["Trading_Price", self.time_column], axis=1).iloc[self.time_step].to_numpy()
     
     @property
     def info(self) -> dict:
@@ -62,10 +63,18 @@ class DiscreteEpisode(BaseEpisode):
         self.allow_holding = allow_holding
         self.action_length = action_length
         
-        self.action_class = DiscreteAction(action=1, allow_holding=allow_holding, max_length=action_length)
     
     def step(self, action) -> Tuple[pd.DataFrame, float, bool, dict]:
+        start_rate = self.dataset.iloc[self.time_step]["Trading_Price"]
         self.time_step += 1
-        self.action_class.action = action
+        end_rate = self.dataset.iloc[self.time_step]["Trading_Price"]
         
-        reward = self.reward_type.get_reward(self.dataset, action)
+        
+        if self.allow_holding and action == 0:
+            reward = 0
+        
+        else:
+            bought = action > 0
+            reward = self.reward_type.reward(start_rate=start_rate, end_rate=end_rate, bought=bought)
+        
+        return self.observation, reward, self.done, self.info

@@ -1,5 +1,5 @@
 from forexgym.utils import Query
-from forexgym.envs import BaseEnvironment
+from forexgym.envs import DiscreteActionEnvironment
 import pandas as pd
 
 def select_close(df: pd.DataFrame, *args, **kwargs) -> pd.DataFrame:
@@ -28,13 +28,17 @@ if __name__ == "__main__":
     )
     # dataset = pair.generate_dataset(query)
     
-    env = BaseEnvironment(
+    env = DiscreteActionEnvironment(
         currency_tickers={"EURUSD": timeframes},
         query=query,
-        reward_type="categorical",
-        episode_length=256
+        reward_type="continuous",
+        reward_multiplier=1e3,
+        episode_length=256,
+        allow_holding=True
     )
     
-    print(env.reset())
+    env.reset()
+    print(env.step(1))
+    
     
     

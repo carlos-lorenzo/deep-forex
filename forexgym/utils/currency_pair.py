@@ -11,10 +11,11 @@ from .timeframe import Timeframe, available_timeframes
 from .data_processors import default_processor
 
 class CurrencyPair:
-    def __init__(self, ticker: str, timeframes: List[str], time_column: str = "Date", *args, **kwargs):
+    def __init__(self, ticker: str, timeframes: List[str], time_column: str = "Date", generate_data: bool = True, *args, **kwargs):
         self.ticker = ticker
         self.timeframes: Dict[str, pd.DataFrame] = {}
         self.time_column = time_column
+        
         
         self._generate_timeframes(timeframes, time_column=time_column, drop_volume=True, *args, **kwargs)
     
@@ -27,7 +28,7 @@ class CurrencyPair:
         else:
             df = pd.read_csv(f"datasets/{self.ticker}/{timeframe}.csv")
         
-        df[time_column] = pd.to_datetime(df[time_column], dayfirst=True)
+        #df[time_column] = pd.to_datetime(df[time_column], dayfirst=True)
         
         # TODO: Download if not found
         
