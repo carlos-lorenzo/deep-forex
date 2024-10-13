@@ -20,9 +20,19 @@ if __name__ == "__main__":
     #timeframes = ["1m", "5m", "15m", "30m", "1H", "4H", "1D"]
     timeframes = ["4H", "1H", "15m"]
     
-    query = Query(episode_length=256, trading_timeframe="1H", trading_column="Close")
+    query = Query(episode_length=256, trading_timeframe="15m", trading_column="Close")
+    query.add_query(
+        timeframe="4H",
+        window_size=4,
+        data_processor=article_processor
+    )
     query.add_query(
         timeframe="1H",
+        window_size=4,
+        data_processor=article_processor
+    )
+    query.add_query(
+        timeframe="15m",
         window_size=16,
         data_processor=article_processor
     )
@@ -37,8 +47,8 @@ if __name__ == "__main__":
         allow_holding=True
     )
     
-    env.reset()
-    print(env.step(1))
+    #env.reset()
+    #print(env.step(1))
     
     
     
