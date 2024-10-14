@@ -97,7 +97,8 @@ class CurrencyPair:
         
         episode_data = episode_data.dropna().reset_index(drop=True)
         
-        episode_data.to_csv(f"datasets/training/{self.ticker}.csv", index=False)
+        if not kwargs.get("no_save", False):
+            episode_data.to_csv(f"datasets/training/{self.ticker}.csv", index=False)
         
         print(f"Generated {self.ticker} dataset.")
         

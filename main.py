@@ -18,14 +18,14 @@ def article_processor(df: pd.DataFrame, *args, **kwargs) -> pd.DataFrame:
 if __name__ == "__main__":
     ticker = "EURUSD"
     #timeframes = ["1m", "5m", "15m", "30m", "1H", "4H", "1D"]
-    timeframes = ["4H", "1H", "15m"]
+    timeframes = ["1H", "15m"]
     
     query = Query(episode_length=256, trading_timeframe="15m", trading_column="Close")
-    query.add_query(
-        timeframe="4H",
-        window_size=4,
-        data_processor=article_processor
-    )
+    # query.add_query(
+    #     timeframe="4H",
+    #     window_size=4,
+    #     data_processor=article_processor
+    # )
     query.add_query(
         timeframe="1H",
         window_size=4,
