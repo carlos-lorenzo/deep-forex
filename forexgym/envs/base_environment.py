@@ -26,7 +26,7 @@ class BaseEnvironment(gym.Env):
         
         time_column = kwargs.get("time_column", "Date")
         
-        self.currency_pairs: Dict[str, CurrencyPair] = {ticker: CurrencyPair(ticker=ticker, timeframes=timeframes, time_column=time_column) for ticker, timeframes in currency_tickers.items()}
+        self.currency_pairs: Dict[str, CurrencyPair] = {ticker: CurrencyPair(ticker=ticker, timeframes=timeframes, time_column=time_column, kwargs=kwargs) for ticker, timeframes in currency_tickers.items()}
         self.datasets: Dict[str, pd.DataFrame] = {pair.ticker: pair.generate_dataset(query) for pair in self.currency_pairs.values()}
             
         self.render_mode = render_mode

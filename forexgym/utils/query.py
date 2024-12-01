@@ -31,6 +31,6 @@ class Query:
     
     @property
     def observation_size(self) -> int:
-        return sum([query["window_size"] for query in self.queries])
+        return sum([query["window_size"] * 5 for query in self.queries]) # The 5 is a temporal hack, it will be inferred from data_processor function
     
     
